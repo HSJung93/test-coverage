@@ -1,10 +1,12 @@
 package elliot.testcoverage.trip;
 
+import static elliot.testcoverage.user.UserBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import elliot.testcoverage.exception.UserNotLoggedInException;
 import elliot.testcoverage.user.User;
+import elliot.testcoverage.user.UserBuilder;
 import java.util.List;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout.Builder;
@@ -45,7 +47,7 @@ class TripServiceTest {
     @Test
     public void should_not_return_any_trips_when_users_are_not_friends(){
 
-        User friend = UserBuilder.aUser()
+        User friend = aUser()
             .friendsWith(ANOTHER_USER)
             .withTrips(TO_BRAZIL)
             .build();
@@ -64,7 +66,7 @@ class TripServiceTest {
     public void should_return_friend_trips_when_users_are_friends(){
 
         // builder pattern
-        User friend = UserBuilder.aUser().friendsWith(ANOTHER_USER, loggedInUser)
+        User friend = aUser().friendsWith(ANOTHER_USER, loggedInUser)
             .withTrips(TO_BRAZIL, TO_LONDON)
             .build();
 
@@ -79,46 +81,6 @@ class TripServiceTest {
         List<Trip> friendTrips = tripService.getTripsByUser(friend);
 
         assertThat(friendTrips.size()).isEqualTo(2);
-    }
-
-    public static class UserBuilder {
-
-        private User[] friends = new User[]{};
-        private Trip[] trips = new Trip[]{};
-
-        public static UserBuilder aUser() {
-            return new UserBuilder();
-        }
-
-        // 3 numbers in programming 0, 1, many
-        public UserBuilder friendsWith(User ... friends) {
-            this.friends = friends;
-            return this;
-        }
-
-        public UserBuilder withTrips(Trip ... trips) {
-            this.trips = trips;
-            return this;
-        }
-
-        public User build() {
-            User user = new User();
-            addTripsTo(user);
-            addFriendsTo(user);
-            return user;
-        }
-
-        private void addFriendsTo(User user) {
-            for (User friend: friends){
-                user.addFriend(friend);
-            }
-        }
-
-        private void addTripsTo(User user) {
-            for (Trip trip: trips){
-                user.addTrip(trip);
-            }
-        }
     }
 
     private class TestableTripService extends TripService{
