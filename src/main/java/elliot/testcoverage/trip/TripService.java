@@ -2,18 +2,17 @@ package elliot.testcoverage.trip;
 
 import elliot.testcoverage.exception.UserNotLoggedInException;
 import elliot.testcoverage.user.User;
-import elliot.testcoverage.user.UserSession;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TripService {
 
-    public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
-        if (getLoggedInUser() == null){
+    public List<Trip> getTripsByUser(User user, User loggedInUser) throws UserNotLoggedInException {
+        if (loggedInUser == null){
             throw new UserNotLoggedInException();
         }
 
-        return user.isFriendsWith(getLoggedInUser())
+        return user.isFriendsWith(loggedInUser)
             ? tripsBy(user)
             : noTrips();
     }
@@ -24,9 +23,5 @@ public abstract class TripService {
 
     protected List<Trip> tripsBy(User user) {
         return TripDAO.findTripsByUser(user);
-    }
-
-    protected User getLoggedInUser() {
-        return UserSession.getInstance().getLoggedUser();
     }
 }
