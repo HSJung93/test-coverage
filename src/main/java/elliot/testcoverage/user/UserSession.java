@@ -1,6 +1,6 @@
 package elliot.testcoverage.user;
 
-import elliot.testcoverage.exception.CollaboratorCallException;
+import elliot.testcoverage.exception.DependedClassCallDuringUnitTestException;
 
 public class UserSession {
 
@@ -15,7 +15,7 @@ public class UserSession {
     }
 
     public User getLoggedUser(){
-        throw new CollaboratorCallException(
+        throw new DependedClassCallDuringUnitTestException(
             "UserSession.getLoggedUser() should not be called in an unit test"
         );
     }
